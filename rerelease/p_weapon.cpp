@@ -982,11 +982,11 @@ GRENADE
 
 void weapon_grenade_fire(edict_t *ent, bool held)
 {
-	int	  damage = 125;
+	int	  damage = 150;
 	int	  speed;
 	float radius;
 
-	radius = (float) (damage + 40);
+	radius = (float) (damage + 25);
 	if (is_quad)
 		damage *= damage_multiplier;
 
@@ -1228,10 +1228,10 @@ GRENADE LAUNCHER
 
 void weapon_grenadelauncher_fire(edict_t *ent)
 {
-	int	  damage = 120;
+	int	  damage = 150;
 	float radius;
 
-	radius = (float) (damage + 40);
+	radius = (float) (damage);
 	if (is_quad)
 		damage *= damage_multiplier;
 
@@ -1506,7 +1506,7 @@ void Machinegun_Fire(edict_t *ent)
 	// Paril: kill sideways angle on hitscan
 	P_ProjectSource(ent, ent->client->v_angle, { 0, 0, -8 }, start, dir);
 	G_LagCompensate(ent, start, dir);
-	fire_bullet(ent, start, dir, damage, kick, DEFAULT_BULLET_HSPREAD, DEFAULT_BULLET_VSPREAD, MOD_MACHINEGUN);
+	fire_bullet(ent, start, dir, damage, kick, DEFAULT_MACHINEGUN_HSPREAD, DEFAULT_MACHINEGUN_VSPREAD, MOD_MACHINEGUN);
 	G_UnLagCompensate();
 	Weapon_PowerupSound(ent);
 
@@ -1678,7 +1678,7 @@ SHOTGUN / SUPERSHOTGUN
 
 void weapon_shotgun_fire(edict_t *ent)
 {
-	int damage = 4;
+	int damage = 5;
 	int kick = 8;
 
 	vec3_t start, dir;
@@ -1697,7 +1697,7 @@ void weapon_shotgun_fire(edict_t *ent)
 	if (deathmatch->integer)
 		fire_shotgun(ent, start, dir, damage, kick, 500, 500, DEFAULT_DEATHMATCH_SHOTGUN_COUNT, MOD_SHOTGUN);
 	else
-		fire_shotgun(ent, start, dir, damage, kick, 500, 500, DEFAULT_SHOTGUN_COUNT, MOD_SHOTGUN);
+		fire_shotgun(ent, start, dir, damage, kick, DEFAULT_SHOTGUN_HSPREAD, DEFAULT_SHOTGUN_VSPREAD, DEFAULT_SHOTGUN_COUNT, MOD_SHOTGUN);
 	G_UnLagCompensate();
 
 	// send muzzle flash
@@ -1721,7 +1721,7 @@ void Weapon_Shotgun(edict_t *ent)
 
 void weapon_supershotgun_fire(edict_t *ent)
 {
-	int damage = 6;
+	int damage = 5;
 	int kick = 12;
 
 	if (is_quad)
@@ -1740,10 +1740,10 @@ void weapon_supershotgun_fire(edict_t *ent)
 	v[ROLL] = ent->client->v_angle[ROLL];
 	// Paril: kill sideways angle on hitscan
 	P_ProjectSource(ent, v, { 0, 0, -8 }, start, dir);
-	fire_shotgun(ent, start, dir, damage, kick, DEFAULT_SHOTGUN_HSPREAD, DEFAULT_SHOTGUN_VSPREAD, DEFAULT_SSHOTGUN_COUNT / 2, MOD_SSHOTGUN);
+	fire_shotgun(ent, start, dir, damage, kick, DEFAULT_SSHOTGUN_HSPREAD, DEFAULT_SHOTGUN_VSPREAD, DEFAULT_SSHOTGUN_COUNT / 2, MOD_SSHOTGUN);
 	v[YAW] = ent->client->v_angle[YAW] + 5;
 	P_ProjectSource(ent, v, { 0, 0, -8 }, start, dir);
-	fire_shotgun(ent, start, dir, damage, kick, DEFAULT_SHOTGUN_HSPREAD, DEFAULT_SHOTGUN_VSPREAD, DEFAULT_SSHOTGUN_COUNT / 2, MOD_SSHOTGUN);
+	fire_shotgun(ent, start, dir, damage, kick, DEFAULT_SSHOTGUN_HSPREAD, DEFAULT_SHOTGUN_VSPREAD, DEFAULT_SSHOTGUN_COUNT / 2, MOD_SSHOTGUN);
 	G_UnLagCompensate();
 
 	P_AddWeaponKick(ent, ent->client->v_forward * -2, { -2.f, 0.f, 0.f });
@@ -1777,7 +1777,7 @@ RAILGUN
 
 void weapon_railgun_fire(edict_t *ent)
 {
-	int damage = 100;
+	int damage = 150;
 	int kick = 200;
 
 	if (is_quad)

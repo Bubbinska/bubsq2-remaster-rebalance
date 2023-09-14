@@ -2063,11 +2063,14 @@ void cleanupHealTarget(edict_t *ent);
 
 constexpr int32_t DEFAULT_BULLET_HSPREAD = 300;
 constexpr int32_t DEFAULT_BULLET_VSPREAD = 500;
-constexpr int32_t DEFAULT_SHOTGUN_HSPREAD = 1000;
+constexpr int32_t DEFAULT_MACHINEGUN_HSPREAD = 150;
+constexpr int32_t DEFAULT_MACHINEGUN_VSPREAD = 200;
+constexpr int32_t DEFAULT_SHOTGUN_HSPREAD = 650;
 constexpr int32_t DEFAULT_SHOTGUN_VSPREAD = 500;
+constexpr int32_t DEFAULT_SSHOTGUN_HSPREAD = 1000;
 constexpr int32_t DEFAULT_DEATHMATCH_SHOTGUN_COUNT = 12;
 constexpr int32_t DEFAULT_SHOTGUN_COUNT = 12;
-constexpr int32_t DEFAULT_SSHOTGUN_COUNT = 20;
+constexpr int32_t DEFAULT_SSHOTGUN_COUNT = 24;
 
 //
 // g_func.c
