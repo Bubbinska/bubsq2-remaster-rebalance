@@ -454,13 +454,15 @@ void G_RemoveAmmo(edict_t *ent)
 }
 
 // [Paril-KEX] get time per animation frame
-inline gtime_t Weapon_AnimationTime(edict_t *ent)
+inline gtime_t Weapon_AnimationTime(edict_t *ent, float_t speed = 1)
 {
 	if (g_quick_weapon_switch->integer && (gi.tick_rate == 20 || gi.tick_rate == 40) &&
 		(ent->client->weaponstate == WEAPON_ACTIVATING || ent->client->weaponstate == WEAPON_DROPPING))
 		ent->client->ps.gunrate = 20;
 	else
 		ent->client->ps.gunrate = 10;
+
+	ent->client->ps.gunrate *= speed;
 
 	if (ent->client->ps.gunframe != 0 && (!(ent->client->pers.weapon->flags & IF_NO_HASTE) || ent->client->weaponstate != WEAPON_FIRING))
 	{
@@ -849,7 +851,7 @@ inline weapon_ready_state_t Weapon_HandleReady(edict_t *ent, int FRAME_FIRE_FIRS
 	return READY_NONE;
 }
 
-inline void Weapon_HandleFiring(edict_t *ent, int32_t FRAME_IDLE_FIRST, std::function<void()> fire_handler)
+inline void Weapon_HandleFiring(edict_t *ent, int32_t FRAME_IDLE_FIRST, std::function<void()> fire_handler, float_t speed = 1)
 {
 	Weapon_SetFinished(ent);
 
@@ -867,10 +869,10 @@ inline void Weapon_HandleFiring(edict_t *ent, int32_t FRAME_IDLE_FIRST, std::fun
 		ent->client->weapon_fire_buffered = false;
 	}
 
-	ent->client->weapon_think_time = level.time + Weapon_AnimationTime(ent);
+	ent->client->weapon_think_time = level.time + Weapon_AnimationTime(ent, speed);
 }
 
-void Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, const int *pause_frames, const int *fire_frames, void (*fire)(edict_t *ent))
+void Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_DEACTIVATE_LAST, const int *pause_frames, const int *fire_frames, void (*fire)(edict_t *ent), float_t firespeed = 1)
 {
 	int FRAME_FIRE_FIRST = (FRAME_ACTIVATE_LAST + 1);
 	int FRAME_IDLE_FIRST = (FRAME_FIRE_LAST + 1);
@@ -895,7 +897,7 @@ void Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, 
 			if (ent->client->weapon_thunk)
 				ent->client->weapon_think_time += FRAME_TIME_S;
 
-			ent->client->weapon_think_time += Weapon_AnimationTime(ent);
+			ent->client->weapon_think_time += Weapon_AnimationTime(ent, firespeed);
 			Weapon_SetFinished(ent);
 
 			for (int n = 0; fire_frames[n]; n++)
@@ -939,7 +941,7 @@ void Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, 
 					break;
 				}
 			}
-		});
+		}, firespeed);
 	}
 }
 
@@ -1257,7 +1259,7 @@ void Weapon_GrenadeLauncher(edict_t *ent)
 	constexpr int pause_frames[] = { 34, 51, 59, 0 };
 	constexpr int fire_frames[] = { 6, 0 };
 
-	Weapon_Generic(ent, 5, 16, 59, 64, pause_frames, fire_frames, weapon_grenadelauncher_fire);
+	Weapon_Generic(ent, 5, 16, 59, 64, pause_frames, fire_frames, weapon_grenadelauncher_fire, 1.25);
 }
 
 /*
@@ -1714,7 +1716,7 @@ void Weapon_Shotgun(edict_t *ent)
 	constexpr int pause_frames[] = { 22, 28, 34, 0 };
 	constexpr int fire_frames[] = { 8, 0 };
 
-	Weapon_Generic(ent, 7, 18, 36, 39, pause_frames, fire_frames, weapon_shotgun_fire);
+	Weapon_Generic(ent, 7, 18, 36, 39, pause_frames, fire_frames, weapon_shotgun_fire, 1.5);
 }
 
 void weapon_supershotgun_fire(edict_t *ent)

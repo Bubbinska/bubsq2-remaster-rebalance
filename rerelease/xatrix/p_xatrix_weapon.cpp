@@ -47,7 +47,7 @@ void Weapon_Ionripper(edict_t *ent)
 	constexpr int pause_frames[] = { 36, 0 };
 	constexpr int fire_frames[] = { 6, 0 };
 
-	Weapon_Generic(ent, 5, 7, 36, 39, pause_frames, fire_frames, weapon_ionripper_fire);
+	Weapon_Generic(ent, 5, 7, 36, 39, pause_frames, fire_frames, weapon_ionripper_fire, 1.25);
 }
 
 //
@@ -123,7 +123,7 @@ void Weapon_Phalanx(edict_t *ent)
 	constexpr int pause_frames[] = { 29, 42, 55, 0 };
 	constexpr int fire_frames[] = { 7, 8, 0 };
 
-	Weapon_Generic(ent, 5, 20, 58, 63, pause_frames, fire_frames, weapon_phalanx_fire);
+	Weapon_Generic(ent, 5, 20, 58, 63, pause_frames, fire_frames, weapon_phalanx_fire, 1);
 }
 
 /*

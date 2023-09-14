@@ -2373,7 +2373,7 @@ void G_RemoveAmmo(edict_t *ent);
 void G_RemoveAmmo(edict_t *ent, int32_t quantity);
 void Weapon_Generic(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST,
 					int FRAME_DEACTIVATE_LAST, const int *pause_frames, const int *fire_frames,
-					void (*fire)(edict_t *ent));
+					void (*fire)(edict_t *ent), float_t firespeed);
 void Weapon_Repeating(edict_t *ent, int FRAME_ACTIVATE_LAST, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST,
 					  int FRAME_DEACTIVATE_LAST, const int *pause_frames, void (*fire)(edict_t *ent));
 void Throw_Generic(edict_t *ent, int FRAME_FIRE_LAST, int FRAME_IDLE_LAST, int FRAME_PRIME_SOUND,

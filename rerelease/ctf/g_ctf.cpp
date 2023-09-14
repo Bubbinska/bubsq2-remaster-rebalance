@@ -1453,7 +1453,7 @@ void CTFWeapon_Grapple(edict_t *ent)
 
 	prevstate = ent->client->weaponstate;
 	Weapon_Generic(ent, 5, 10, 31, 36, pause_frames, fire_frames,
-				   CTFWeapon_Grapple_Fire);
+				   CTFWeapon_Grapple_Fire, 1);
 
 	// if the the attack button is still down, stay in the firing frame
 	if ((ent->client->buttons & (BUTTON_ATTACK | BUTTON_HOLSTER)) &&

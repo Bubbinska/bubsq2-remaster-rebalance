@@ -30,7 +30,7 @@ void Weapon_ProxLauncher(edict_t *ent)
 	constexpr int pause_frames[] = { 34, 51, 59, 0 };
 	constexpr int fire_frames[] = { 6, 0 };
 
-	Weapon_Generic(ent, 5, 16, 59, 64, pause_frames, fire_frames, weapon_prox_fire);
+	Weapon_Generic(ent, 5, 16, 59, 64, pause_frames, fire_frames, weapon_prox_fire, 1.25);
 }
 
 void weapon_tesla_fire(edict_t *ent, bool held)
@@ -252,7 +252,7 @@ void Weapon_Disintegrator(edict_t *ent)
 	constexpr int pause_frames[] = { 14, 19, 23, 0 };
 	constexpr int fire_frames[] = { 5, 0 };
 
-	Weapon_Generic(ent, 4, 9, 29, 34, pause_frames, fire_frames, weapon_tracker_fire);
+	Weapon_Generic(ent, 4, 9, 29, 34, pause_frames, fire_frames, weapon_tracker_fire, 1);
 }
 
 /*

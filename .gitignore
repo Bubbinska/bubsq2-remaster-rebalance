@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/rerelease/.vs/game
+/rerelease/vcpkg_installed/x64-windows-static
+/rerelease/x64/Debug
+/game_x64.dll
+/game_x64.exp
+/game_x64.lib
+/game_x64.pdb
