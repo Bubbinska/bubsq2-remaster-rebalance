@@ -816,6 +816,16 @@ void SP_monster_berserk(edict_t *self)
 	self->monsterinfo.drop_height = 256;
 	self->monsterinfo.jump_height = 40;
 
+	//if (DiceRoll() > 2)
+	{
+		self->s.scale = 0.5;
+		//self->monsterinfo.scale *= 0.5;
+		//self->mins *= 0.5;
+		//self->maxs *= 0.5;
+		//self->mass *= 0.5;
+		self->health *= 0.5;
+	}
+
 	gi.linkentity(self);
 
 	walkmonster_start(self);

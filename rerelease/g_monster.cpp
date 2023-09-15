@@ -1279,6 +1279,12 @@ bool monster_start(edict_t *self)
 		if (!self->item)
 			gi.Com_PrintFmt("{}: bad item: {}\n", *self, st.item);
 	}
+	else
+	{
+		
+		// Roll on a random table for the monster to maybe have some sweet loot to drop
+		// self->item = FindItemByClassname("item_armor_jacket");
+	}
 
 	// randomize what frame they start on
 	if (self->monsterinfo.active_move)

@@ -2183,6 +2183,11 @@ constexpr spawnflags_t SPAWNFLAG_FIXBOT_WORKING = 32_spawnflag;
 //
 // g_misc.c
 //
+
+constexpr int32_t DICEROLL_MIN = 1;
+constexpr int32_t DICEROLL_MAX = 6;
+int32_t DiceRoll();
+
 void ThrowClientHead(edict_t *self, int damage);
 void gib_die(edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, const vec3_t &point, const mod_t &mod);
 edict_t *ThrowGib(edict_t *self, const char *gibname, int damage, gib_type_t type, float scale);

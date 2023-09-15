@@ -217,6 +217,11 @@ edict_t *ThrowGib(edict_t *self, const char *gibname, int damage, gib_type_t typ
 	return gib;
 }
 
+int32_t DiceRoll()
+{
+	return irandom(DICEROLL_MIN, DICEROLL_MAX + 1);
+}
+
 void ThrowClientHead(edict_t *self, int damage)
 {
 	vec3_t		vd;
