@@ -851,6 +851,16 @@ void SP_monster_chick(edict_t *self)
 	M_SetAnimation(self, &chick_move_stand);
 	self->monsterinfo.scale = MODEL_SCALE;
 
+	// one in three of these grills will be thicc
+	if (DiceRoll() > 4)
+	{
+		if (!self->s.scale)
+			self->s.scale = 1;
+		self->s.effects |= EF_HYPERBLASTER;
+		self->s.scale *= 1.25;
+		self->health *= 1.5;
+	}
+
 	// PMM
 	self->monsterinfo.blindfire = true;
 	// pmm

@@ -423,13 +423,13 @@ void SP_monster_gladiator(edict_t *self)
 	{
 		sound_gunb = gi.soundindex("weapons/plasshot.wav");
 
-		self->health = 250 * st.health_multiplier;
+		self->health = 200 * st.health_multiplier;
 		self->mass = 350;
 
 		if (!st.was_key_specified("power_armor_type"))
 			self->monsterinfo.power_armor_type = IT_ITEM_POWER_SHIELD;
 		if (!st.was_key_specified("power_armor_power"))
-			self->monsterinfo.power_armor_power = 250;
+			self->monsterinfo.power_armor_power = 200;
 
 		self->s.skinnum = 2;
 
@@ -442,7 +442,7 @@ void SP_monster_gladiator(edict_t *self)
 		// RAFAEL
 		sound_gun = gi.soundindex("gladiator/railgun.wav");
 
-		self->health = 400 * st.health_multiplier;
+		self->health = 300 * st.health_multiplier;
 		self->mass = 400;
 		// RAFAEL
 
@@ -473,6 +473,16 @@ void SP_monster_gladiator(edict_t *self)
 	gi.linkentity(self);
 	M_SetAnimation(self, &gladiator_move_stand);
 	self->monsterinfo.scale = MODEL_SCALE;
+
+	// one in three of these guys will be a chonky boy
+	if (DiceRoll() > 4)
+	{
+		if (!self->s.scale)
+			self->s.scale = 1;
+		self->s.effects |= EF_HYPERBLASTER;
+		self->s.scale *= 1.25;
+		self->health *= 1.5;
+	}
 
 	walkmonster_start(self);
 }

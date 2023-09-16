@@ -1253,7 +1253,9 @@ bool monster_start(edict_t *self)
 		self->monsterinfo.checkattack = M_CheckAttack;
 
 	if ( ai_model_scale->value > 0 ) {
-		self->s.scale = ai_model_scale->value;
+		if (!self->s.scale)
+			self->s.scale = 1;
+		self->s.scale *= ai_model_scale->value;
 	}
 
 	if (self->s.scale)

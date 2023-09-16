@@ -592,7 +592,7 @@ void SP_monster_hover(edict_t *self)
 	self->mins = { -24, -24, -24 };
 	self->maxs = { 24, 24, 32 };
 
-	self->health = 240 * st.health_multiplier;
+	self->health = 150 * st.health_multiplier;
 	self->gib_health = -100;
 	self->mass = 150;
 
@@ -610,7 +610,7 @@ void SP_monster_hover(edict_t *self)
 	// PGM
 	if (strcmp(self->classname, "monster_daedalus") == 0)
 	{
-		self->health = 450 * st.health_multiplier;
+		self->health = 250 * st.health_multiplier;
 		self->mass = 225;
 		self->yaw_speed = 23;
 		if (!st.was_key_specified("power_armor_type"))

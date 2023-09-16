@@ -380,5 +380,15 @@ void SP_monster_flipper(edict_t *self)
 	self->monsterinfo.aiflags |= AI_ALTERNATE_FLY;
 	flipper_set_fly_parameters(self);
 
+	// one in three of these guys will be a chonky boy
+	if (DiceRoll() > 4)
+	{
+		if (!self->s.scale)
+			self->s.scale = 1;
+		self->s.scale *= 1.5;
+		self->health *= 2.0;
+	}
+
+
 	swimmonster_start(self);
 }

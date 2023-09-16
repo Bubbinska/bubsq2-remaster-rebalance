@@ -1059,15 +1059,15 @@ void SP_monster_tank(edict_t *self)
 
 	if (strcmp(self->classname, "monster_tank_commander") == 0)
 	{
-		self->health = 1000 * st.health_multiplier;
-		self->gib_health = -225;
+		self->health = 850 * st.health_multiplier;
+		self->gib_health = -200;
 		self->count = 1;
 		sound_pain2 = gi.soundindex("tank/pain.wav");
 	}
 	else
 	{
-		self->health = 750 * st.health_multiplier;
-		self->gib_health = -200;
+		self->health = 550 * st.health_multiplier;
+		self->gib_health = -150;
 		sound_pain = gi.soundindex("tank/tnkpain2.wav");
 	}
 

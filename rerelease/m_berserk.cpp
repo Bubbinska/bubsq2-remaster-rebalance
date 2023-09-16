@@ -258,7 +258,8 @@ static void berserk_attack_slam(edict_t *self)
 	self->velocity = {};
 	self->flags |= FL_KILL_VELOCITY;
 
-	T_SlamRadiusDamage(tr.endpos, self, self, 35, 150.f, self, 275, MOD_UNKNOWN);
+	// Bubs: Turned down damage 35 -> 25 for the leap attack, it's a cool scary move but shouldn't be so dangerous IMO
+	T_SlamRadiusDamage(tr.endpos, self, self, 25, 150.f, self, 275, MOD_UNKNOWN);
 }
 
 TOUCH(berserk_jump_touch) (edict_t *self, edict_t *other, const trace_t &tr, bool other_touching_self) -> void
@@ -816,14 +817,14 @@ void SP_monster_berserk(edict_t *self)
 	self->monsterinfo.drop_height = 256;
 	self->monsterinfo.jump_height = 40;
 
-	//if (DiceRoll() > 2)
+	// one in three of these guys will be a chonky boy
+	if (DiceRoll() > 4)
 	{
-		self->s.scale = 0.5;
-		//self->monsterinfo.scale *= 0.5;
-		//self->mins *= 0.5;
-		//self->maxs *= 0.5;
-		//self->mass *= 0.5;
-		self->health *= 0.5;
+		if (!self->s.scale)
+			self->s.scale = 1;
+		self->s.effects |= EF_HYPERBLASTER;
+		self->s.scale *= 1.25;
+		self->health *= 1.5;
 	}
 
 	gi.linkentity(self);

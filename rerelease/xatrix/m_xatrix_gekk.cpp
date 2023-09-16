@@ -1645,7 +1645,17 @@ void SP_monster_gekk(edict_t *self)
 	M_SetAnimation(self, &gekk_move_stand);
 
 	self->monsterinfo.scale = MODEL_SCALE;
-	
+
+	// one in three of these guys will be a chonky boy
+	if (DiceRoll() > 4)
+	{
+		if (!self->s.scale)
+			self->s.scale = 1;
+		self->s.effects |= EF_HYPERBLASTER;
+		self->s.scale *= 1.25;
+		self->health *= 1.5;
+	}
+
 	walkmonster_start(self);
 
 	if (self->spawnflags.has(SPAWNFLAG_GEKK_CHANT))
