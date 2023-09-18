@@ -475,13 +475,35 @@ void SP_monster_gladiator(edict_t *self)
 	self->monsterinfo.scale = MODEL_SCALE;
 
 	// one in three of these guys will be a chonky boy
-	if (DiceRoll() > 4)
+	if (!st.item && DiceRoll() > 4)
 	{
 		if (!self->s.scale)
 			self->s.scale = 1;
 		self->s.effects |= EF_HYPERBLASTER;
 		self->s.scale *= 1.25;
 		self->health *= 1.5;
+
+		if (!self->item)
+		{
+			// Chance for ammo, rare chance for weapon
+			switch (DiceRoll())
+			{
+			case 1:
+			case 2:
+			case 3:
+				break;
+			case 4:
+			case 5:
+				// TODO: If it's a phalanx gladiator, drop magslugs or phalanx instead
+				self->item = FindItemByClassname("ammo_slugs"); 
+				break;
+			case 6:
+				self->item = FindItemByClassname("weapon_railgun");
+				break;
+			default:
+				break;
+			}
+		}
 	}
 
 	walkmonster_start(self);

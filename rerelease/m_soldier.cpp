@@ -1879,13 +1879,20 @@ void SP_monster_soldier_x(edict_t *self)
 	self->monsterinfo.stand(self);
 
 	// one in three of these guys will be a chonky boy
-	if (DiceRoll() > 4)
+	if (!st.item)
 	{
-		if (!self->s.scale)
-			self->s.scale = 1;
-		self->s.effects |= EF_HYPERBLASTER;
-		self->s.scale *= 1.25;
-		self->health *= 1.5;
+		if (DiceRoll() > 4)
+		{
+			if (!self->s.scale)
+				self->s.scale = 1;
+			self->s.effects |= EF_HYPERBLASTER;
+			self->s.scale *= 1.25;
+			self->health *= 1.5;
+			if (!self->item)
+			{
+				self->item = FindItemByClassname("item_armor_shard");
+			}
+		}
 	}
 
 	walkmonster_start(self);
