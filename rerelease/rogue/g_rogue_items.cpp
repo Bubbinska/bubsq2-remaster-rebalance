@@ -43,7 +43,7 @@ void Use_Double(edict_t *ent, gitem_t *item)
 {
 	ent->client->pers.inventory[item->id]--;
 
-	ent->client->double_time = max(level.time, ent->client->double_time) + 30_sec;
+	ent->client->double_time = max(level.time, ent->client->double_time) + 15_sec;
 
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("misc/ddamage1.wav"), 1, ATTN_NORM, 0);
 }

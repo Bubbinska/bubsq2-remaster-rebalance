@@ -216,6 +216,48 @@ bool Pickup_Powerup(edict_t *ent, edict_t *other)
 	int quantity;
 
 	quantity = other->client->pers.inventory[ent->item->id];
+	if ((skill->integer == 0 && quantity >= 10) ||
+		(skill->integer == 1 && quantity >= 6) ||
+		(skill->integer >= 2 && quantity >= 4))
+		return false;
+
+	if (coop->integer && !P_UseCoopInstancedItems() && (ent->item->flags & IF_STAY_COOP) && (quantity > 0))
+		return false;
+
+	other->client->pers.inventory[ent->item->id] += 2;
+
+	bool is_dropped_from_death = ent->spawnflags.has(SPAWNFLAG_ITEM_DROPPED_PLAYER) && !ent->spawnflags.has(SPAWNFLAG_ITEM_DROPPED);
+
+	if (IsInstantItemsEnabled() ||
+		((ent->item->use == Use_Quad) && is_dropped_from_death) ||
+		((ent->item->use == Use_QuadFire) && is_dropped_from_death))
+	{
+		if ((ent->item->use == Use_Quad) && is_dropped_from_death)
+			quad_drop_timeout_hack = (ent->nextthink - level.time);
+		else if ((ent->item->use == Use_QuadFire) && is_dropped_from_death)
+			quad_fire_drop_timeout_hack = (ent->nextthink - level.time);
+
+		if (ent->item->use)
+		{
+			ent->item->use(other, ent->item);
+			ent->item->use(other, ent->item);
+		}
+	}
+
+	if (deathmatch->integer)
+	{
+		if (!(ent->spawnflags & SPAWNFLAG_ITEM_DROPPED))
+			SetRespawn(ent, gtime_t::from_sec(ent->item->quantity));
+	}
+
+	return true;
+}
+
+bool Pickup_Equipment(edict_t* ent, edict_t* other)
+{
+	int quantity;
+
+	quantity = other->client->pers.inventory[ent->item->id];
 	if ((skill->integer == 0 && quantity >= 3) ||
 		(skill->integer == 1 && quantity >= 2) ||
 		(skill->integer >= 2 && quantity >= 1))
@@ -426,7 +468,7 @@ void Use_Quad(edict_t *ent, gitem_t *item)
 	}
 	else
 	{
-		timeout = 30_sec;
+		timeout = 10_sec;
 	}
 
 	ent->client->quad_time = max(level.time, ent->client->quad_time) + timeout;
@@ -449,7 +491,7 @@ void Use_QuadFire(edict_t *ent, gitem_t *item)
 	}
 	else
 	{
-		timeout = 30_sec;
+		timeout = 10_sec;
 	}
 
 	ent->client->quadfire_time = max(level.time, ent->client->quadfire_time) + timeout;
@@ -486,7 +528,7 @@ void Use_Invulnerability(edict_t *ent, gitem_t *item)
 {
 	ent->client->pers.inventory[item->id]--;
 
-	ent->client->invincible_time = max(level.time, ent->client->invincible_time) + 30_sec;
+	ent->client->invincible_time = max(level.time, ent->client->invincible_time) + 10_sec;
 
 	gi.sound(ent, CHAN_ITEM, gi.soundindex("items/protect.wav"), 1, ATTN_NORM, 0);
 }
@@ -1289,7 +1331,7 @@ void SpawnItem(edict_t *ent, gitem_t *item)
 		// [Kex] In instagib, spawn no pickups!
 		if (g_instagib->value)
 		{
-			if (item->pickup == Pickup_Armor || item->pickup == Pickup_PowerArmor ||
+			if (item->pickup == Pickup_Armor || item->pickup == Pickup_PowerArmor || item->pickup == Pickup_Equipment ||
 				item->pickup == Pickup_Powerup || item->pickup == Pickup_Sphere || item->pickup == Pickup_Doppleganger ||
 				(item->flags & IF_HEALTH) || (item->flags & IF_AMMO) || item->pickup == Pickup_Weapon || item->pickup == Pickup_Pack)
 			{
@@ -2773,7 +2815,7 @@ model="models/items/ammo/rockets/medium/tris.md2"
 	{
 		/* id */ IT_ITEM_INVISIBILITY,
 		/* classname */ "item_invisibility",
-		/* pickup */ Pickup_Powerup,
+		/* pickup */ Pickup_Equipment,
 		/* use */ Use_Invisibility,
 		/* drop */ Drop_General,
 		/* weaponthink */ nullptr,
@@ -2800,7 +2842,7 @@ model="models/items/silencer/tris.md2"
 	{
 		/* id */ IT_ITEM_SILENCER,
 		/* classname */ "item_silencer",
-		/* pickup */ Pickup_Powerup,
+		/* pickup */ Pickup_Equipment,
 		/* use */ Use_Silencer,
 		/* drop */ Drop_General,
 		/* weaponthink */ nullptr,
@@ -2826,7 +2868,7 @@ model="models/items/silencer/tris.md2"
 	{
 		/* id */ IT_ITEM_REBREATHER,
 		/* classname */ "item_breather",
-		/* pickup */ Pickup_Powerup,
+		/* pickup */ Pickup_Equipment,
 		/* use */ Use_Breather,
 		/* drop */ Drop_General,
 		/* weaponthink */ nullptr,
@@ -2853,7 +2895,7 @@ model="models/items/silencer/tris.md2"
 	{
 		/* id */ IT_ITEM_ENVIROSUIT,
 		/* classname */ "item_enviro",
-		/* pickup */ Pickup_Powerup,
+		/* pickup */ Pickup_Equipment,
 		/* use */ Use_Envirosuit,
 		/* drop */ Drop_General,
 		/* weaponthink */ nullptr,
@@ -2882,7 +2924,7 @@ model="models/items/c_head/tris.md2"
 	{
 		/* id */ IT_ITEM_ANCIENT_HEAD,
 		/* classname */ "item_ancient_head",
-		/* pickup */ Pickup_LegacyHead,
+		/* pickup */ Pickup_Equipment,
 		/* use */ nullptr,
 		/* drop */ nullptr,
 		/* weaponthink */ nullptr,
@@ -2907,7 +2949,7 @@ model="models/items/c_head/tris.md2"
 	{
 		/* id */ IT_ITEM_LEGACY_HEAD,
 		/* classname */ "item_legacy_head",
-		/* pickup */ Pickup_LegacyHead,
+		/* pickup */ Pickup_Equipment,
 		/* use */ nullptr,
 		/* drop */ nullptr,
 		/* weaponthink */ nullptr,
@@ -2931,7 +2973,7 @@ gives +1 to maximum health
 	{
 		/* id */ IT_ITEM_ADRENALINE,
 		/* classname */ "item_adrenaline",
-		/* pickup */ Pickup_Powerup,
+		/* pickup */ Pickup_Equipment,
 		/* use */ Use_Adrenaline,
 		/* drop */ Drop_General,
 		/* weaponthink */ nullptr,
@@ -3003,7 +3045,7 @@ gives +1 to maximum health
 	{
 		/* id */ IT_ITEM_IR_GOGGLES,
 		/* classname */ "item_ir_goggles",
-		/* pickup */ Pickup_Powerup,
+		/* pickup */ Pickup_Equipment,
 		/* use */ Use_IR,
 		/* drop */ Drop_General,
 		/* weaponthink */ nullptr,
