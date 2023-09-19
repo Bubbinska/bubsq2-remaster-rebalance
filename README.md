@@ -2,21 +2,23 @@
 
 This repo is for my changes to the Quake2 re-release code for my mod, which you can download here https://www.nexusmods.com/quake2/mods/27
 
-This mod makes the following changes to weapons:
+This mod makes some changes to weapon and enemy balance and otherwise attempts to make the single-player game fresh and interesting for veteran strogg slayers. 
 
-Shotgun: Slightly wider spread, slightly more damage per pellet, increased rate of fire (1.5x)
+I'll try to keep the nexusmods page updated with a full feature list but here's the broad strokes of what I'm gonna try to do:
 
-Super Shotgun: More pellets, less damage per pellet, overall damage remains the same
+1. Try to make all the weapons (sans blaster) still kinda useful situationally and not being totally supplanted by upgrades
+2. Try to make some enemies more interesting to fight
+3. Randomize some elements in the game so there's some variety every time you play
 
-Machinegun: Half spread so more reliable for ranged pickoffs
+The big project I'm hoping to achieve for the next update is Quirks! Random enemy enchantments that cause you some confusion, discomfort or pleasure. The current version has "Chonkers", a bigger and tougher guy who emits light. 
 
-Grenade Launcher: 120 -> 150 damage, slightly lower radius, slightly increased rate of fire (1.2x)
+Planned Quirks:
 
-Hand Grenade: slightly higher radius damage
-
-Railgun: 100 -> 150 damage
-
-I'd like to make some more changes in future, but these ideas are more ambitious and will require a lot more work.
+* Speedster: A faster, smaller enemy
+* Splitter: Kill it and two tiny ones appear!
+* Sploder: Goes bang when killed
+* Screamer: Alerts nearby monsters
+* Stranger: Changes the weapon somehow
 
 To install:
 
