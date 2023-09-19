@@ -1829,7 +1829,7 @@ MONSTERINFO_STAND(soldier_blind) (edict_t *self) -> void
 
 constexpr spawnflags_t SPAWNFLAG_SOLDIER_BLIND = 8_spawnflag;
 
-void SP_monster_soldier_x(edict_t *self)
+void SetupMonster_Guard(edict_t *self)
 {
 	self->s.modelindex = gi.modelindex("models/monsters/soldier/tris.md2");
 	self->monsterinfo.scale = MODEL_SCALE;
@@ -1842,7 +1842,7 @@ void SP_monster_soldier_x(edict_t *self)
 	sound_sight1 = gi.soundindex("soldier/solsght1.wav");
 	sound_sight2 = gi.soundindex("soldier/solsrch1.wav");
 	sound_cock = gi.soundindex("infantry/infatck3.wav");
-	
+
 	gi.modelindex("models/monsters/soldier/gibs/head.md2");
 	gi.modelindex("models/monsters/soldier/gibs/gun.md2");
 	gi.modelindex("models/monsters/soldier/gibs/arm.md2");
@@ -1877,30 +1877,92 @@ void SP_monster_soldier_x(edict_t *self)
 	gi.linkentity(self);
 
 	self->monsterinfo.stand(self);
-
-	// one in three of these guys will be a chonky boy
-	if (!st.item)
-	{
-		if (DiceRoll() > 4)
-		{
-			if (!self->s.scale)
-				self->s.scale = 1;
-			self->s.effects |= EF_HYPERBLASTER;
-			self->s.scale *= 1.25;
-			self->health *= 1.5;
-			if (!self->item)
-			{
-				self->item = FindItemByClassname("item_armor_shard");
-			}
-		}
-	}
-
-	walkmonster_start(self);
 }
-
-void SP_monster_soldier_vanilla(edict_t *self)
+void SetupMonsterSpecifics_GuardBlaster(edict_t *self)
 {
-	SP_monster_soldier_x(self);
+	sound_pain_light = gi.soundindex("soldier/solpain2.wav");
+	sound_death_light = gi.soundindex("soldier/soldeth2.wav");
+	gi.modelindex("models/objects/laser/tris.md2");
+	gi.soundindex("misc/lasfly.wav");
+	gi.soundindex("soldier/solatck2.wav");
+
+	self->s.skinnum = 0;
+	self->count = self->s.skinnum;
+	self->health = self->max_health = 30 * st.health_multiplier;
+	self->gib_health = -70;
+
+	// PMM - blindfire
+	self->monsterinfo.blindfire = true;
+}
+void SetupMonsterSpecifics_GuardShotgun(edict_t *self)
+{
+	sound_pain_ss = gi.soundindex("soldier/solpain3.wav");
+	sound_death_ss = gi.soundindex("soldier/soldeth3.wav");
+	gi.soundindex("soldier/solatck3.wav");
+
+	self->s.skinnum = 4;
+	self->count = self->s.skinnum;
+	self->health = self->max_health = 40 * st.health_multiplier;
+	self->gib_health = -60;
+}
+void SetupMonsterSpecifics_GuardMachinegun(edict_t *self)
+{
+	sound_pain = gi.soundindex("soldier/solpain1.wav");
+	sound_death = gi.soundindex("soldier/soldeth1.wav");
+	gi.soundindex("soldier/solatck1.wav");
+
+	self->s.skinnum = 2;
+	self->count = self->s.skinnum;
+	self->health = self->max_health = 30 * st.health_multiplier;
+	self->gib_health = -60;
+}
+void SetupMonsterSpecifics_GuardRipper(edict_t *self)
+{
+	sound_pain_light = gi.soundindex("soldier/solpain2.wav");
+	sound_death_light = gi.soundindex("soldier/soldeth2.wav");
+
+	gi.modelindex("models/objects/boomrang/tris.md2");
+	gi.soundindex("misc/lasfly.wav");
+	gi.soundindex("soldier/solatck2.wav");
+
+	self->s.skinnum = 6;
+	self->count = self->s.skinnum - 6;
+	self->health = self->max_health = 40 * st.health_multiplier;
+	self->gib_health = -60;
+
+	// PMM - blindfire
+	self->monsterinfo.blindfire = true;
+	self->style = 1;
+}
+void SetupMonsterSpecifics_GuardLaser(edict_t *self)
+{
+	sound_pain_ss = gi.soundindex("soldier/solpain3.wav");
+	sound_death_ss = gi.soundindex("soldier/soldeth3.wav");
+	gi.soundindex("soldier/solatck3.wav");
+
+	self->s.skinnum = 10;
+	self->count = self->s.skinnum - 6;
+	self->health = self->max_health = 60 * st.health_multiplier;
+	self->gib_health = -60;
+	self->style = 1;
+}
+void SetupMonsterSpecifics_GuardHyperblaster(edict_t *self)
+{
+	gi.modelindex("models/objects/laser/tris.md2");
+	sound_pain = gi.soundindex("soldier/solpain1.wav");
+	sound_death = gi.soundindex("soldier/soldeth1.wav");
+	gi.soundindex("soldier/solatck1.wav");
+	gi.soundindex("weapons/hyprbd1a.wav");
+	gi.soundindex("weapons/hyprbl1a.wav");
+
+	self->s.skinnum = 8;
+	self->count = self->s.skinnum - 6;
+	self->health = self->max_health = 50 * st.health_multiplier;
+	self->gib_health = -50;
+
+	// PMM - blindfire
+	self->monsterinfo.blindfire = true;
+	self->style = 1;
 }
 
 /*QUAKED monster_soldier_light (1 .5 0) (-16 -16 -24) (16 16 32) Ambush Trigger_Spawn Sight
@@ -1911,43 +1973,72 @@ void SP_monster_soldier_light(edict_t *self)
 		G_FreeEdict( self );
 		return;
 	}
-
-	SP_monster_soldier_x(self);
-
-	sound_pain_light = gi.soundindex("soldier/solpain2.wav");
-	sound_death_light = gi.soundindex("soldier/soldeth2.wav");
-	gi.modelindex("models/objects/laser/tris.md2");
-	gi.soundindex("misc/lasfly.wav");
-	gi.soundindex("soldier/solatck2.wav");
-
-	self->s.skinnum = 0;
-	self->count = self->s.skinnum;
-	self->health = self->max_health = 20 * st.health_multiplier;
-	self->gib_health = -30;
-
-	// PMM - blindfire
-	self->monsterinfo.blindfire = true;
+	SetupMonster_Guard(self);
+	switch (irandom(10))
+	{
+		case 0:
+			SetupMonsterSpecifics_GuardShotgun(self);
+			break;
+		case 1:
+			SetupMonsterSpecifics_GuardMachinegun(self);
+			break;
+		case 2:
+			SetupMonsterSpecifics_GuardRipper(self);
+			break;
+		case 3:
+			SetupMonsterSpecifics_GuardLaser(self);
+			break;
+		case 4:
+			SetupMonsterSpecifics_GuardHyperblaster(self);
+			break;
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		default:
+			SetupMonsterSpecifics_GuardBlaster(self);
+			break;
+	}
+	walkmonster_start(self);
 }
 
 /*QUAKED monster_soldier (1 .5 0) (-16 -16 -24) (16 16 32) Ambush Trigger_Spawn Sight
  */
 void SP_monster_soldier(edict_t *self)
 {
-	if( !M_AllowSpawn( self ) ) {
-		G_FreeEdict( self );
+	if (!M_AllowSpawn(self)) {
+		G_FreeEdict(self);
 		return;
 	}
-
-	SP_monster_soldier_x(self);
-
-	sound_pain = gi.soundindex("soldier/solpain1.wav");
-	sound_death = gi.soundindex("soldier/soldeth1.wav");
-	gi.soundindex("soldier/solatck1.wav");
-
-	self->s.skinnum = 2;
-	self->count = self->s.skinnum;
-	self->health = self->max_health = 30 * st.health_multiplier;
-	self->gib_health = -30;
+	SetupMonster_Guard(self);
+	switch (irandom(10))
+	{
+		case 0:
+			SetupMonsterSpecifics_GuardShotgun(self);
+			break;
+		case 1:
+			SetupMonsterSpecifics_GuardBlaster(self);
+			break;
+		case 2:
+			SetupMonsterSpecifics_GuardRipper(self);
+			break;
+		case 3:
+			SetupMonsterSpecifics_GuardLaser(self);
+			break;
+		case 4:
+			SetupMonsterSpecifics_GuardHyperblaster(self);
+			break;
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		default:
+			SetupMonsterSpecifics_GuardMachinegun(self);
+			break;
+	}
+	walkmonster_start(self);
 }
 
 /*QUAKED monster_soldier_ss (1 .5 0) (-16 -16 -24) (16 16 32) Ambush Trigger_Spawn Sight
@@ -1958,27 +2049,34 @@ void SP_monster_soldier_ss(edict_t *self)
 		G_FreeEdict( self );
 		return;
 	}
-
-	SP_monster_soldier_x(self);
-
-	sound_pain_ss = gi.soundindex("soldier/solpain3.wav");
-	sound_death_ss = gi.soundindex("soldier/soldeth3.wav");
-	gi.soundindex("soldier/solatck3.wav");
-
-	self->s.skinnum = 4;
-	self->count = self->s.skinnum;
-	self->health = self->max_health = 40 * st.health_multiplier;
-	self->gib_health = -30;
-}
-
-//
-// SPAWN
-//
-
-void SP_monster_soldier_h(edict_t *self)
-{
-	SP_monster_soldier_x(self);
-	self->style = 1;
+	SetupMonster_Guard(self);
+	switch (irandom(10))
+	{
+		case 0:
+			SetupMonsterSpecifics_GuardMachinegun(self);
+			break;
+		case 1:
+			SetupMonsterSpecifics_GuardBlaster(self);
+			break;
+		case 2:
+			SetupMonsterSpecifics_GuardRipper(self);
+			break;
+		case 3:
+			SetupMonsterSpecifics_GuardLaser(self);
+			break;
+		case 4:
+			SetupMonsterSpecifics_GuardHyperblaster(self);
+			break;
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		default:
+			SetupMonsterSpecifics_GuardShotgun(self);
+			break;
+	}
+	walkmonster_start(self);
 }
 
 /*QUAKED monster_soldier_ripper (1 .5 0) (-16 -16 -24) (16 16 32) Ambush Trigger_Spawn Sight
@@ -1990,22 +2088,34 @@ void SP_monster_soldier_ripper(edict_t *self)
 		return;
 	}
 
-	SP_monster_soldier_h(self);
-
-	sound_pain_light = gi.soundindex("soldier/solpain2.wav");
-	sound_death_light = gi.soundindex("soldier/soldeth2.wav");
-
-	gi.modelindex("models/objects/boomrang/tris.md2");
-	gi.soundindex("misc/lasfly.wav");
-	gi.soundindex("soldier/solatck2.wav");
-
-	self->s.skinnum = 6;
-	self->count = self->s.skinnum - 6;
-	self->health = self->max_health = 50 * st.health_multiplier;
-	self->gib_health = -30;
-
-	// PMM - blindfire
-	self->monsterinfo.blindfire = true;
+	SetupMonster_Guard(self);
+	switch (irandom(10))
+	{
+		case 0:
+			SetupMonsterSpecifics_GuardMachinegun(self);
+			break;
+		case 1:
+			SetupMonsterSpecifics_GuardBlaster(self);
+			break;
+		case 2:
+			SetupMonsterSpecifics_GuardShotgun(self);
+			break;
+		case 3:
+			SetupMonsterSpecifics_GuardLaser(self);
+			break;
+		case 4:
+			SetupMonsterSpecifics_GuardHyperblaster(self);
+			break;
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		default:
+			SetupMonsterSpecifics_GuardRipper(self);
+			break;
+	}
+	walkmonster_start(self);
 }
 
 /*QUAKED monster_soldier_hypergun (1 .5 0) (-16 -16 -24) (16 16 32) Ambush Trigger_Spawn Sight
@@ -2017,22 +2127,34 @@ void SP_monster_soldier_hypergun(edict_t *self)
 		return;
 	}
 
-	SP_monster_soldier_h(self);
-
-	gi.modelindex("models/objects/laser/tris.md2");
-	sound_pain = gi.soundindex("soldier/solpain1.wav");
-	sound_death = gi.soundindex("soldier/soldeth1.wav");
-	gi.soundindex("soldier/solatck1.wav");
-	gi.soundindex("weapons/hyprbd1a.wav");
-	gi.soundindex("weapons/hyprbl1a.wav");
-
-	self->s.skinnum = 8;
-	self->count = self->s.skinnum - 6;
-	self->health = self->max_health = 60 * st.health_multiplier;
-	self->gib_health = -30;
-
-	// PMM - blindfire
-	self->monsterinfo.blindfire = true;
+	SetupMonster_Guard(self);
+	switch (irandom(10))
+	{
+		case 0:
+			SetupMonsterSpecifics_GuardMachinegun(self);
+			break;
+		case 1:
+			SetupMonsterSpecifics_GuardBlaster(self);
+			break;
+		case 2:
+			SetupMonsterSpecifics_GuardShotgun(self);
+			break;
+		case 3:
+			SetupMonsterSpecifics_GuardLaser(self);
+			break;
+		case 4:
+			SetupMonsterSpecifics_GuardRipper(self);
+			break;
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		default:
+			SetupMonsterSpecifics_GuardHyperblaster(self);
+			break;
+	}
+	walkmonster_start(self);
 }
 
 /*QUAKED monster_soldier_lasergun (1 .5 0) (-16 -16 -24) (16 16 32) Ambush Trigger_Spawn Sight
@@ -2044,16 +2166,34 @@ void SP_monster_soldier_lasergun(edict_t *self)
 		return;
 	}
 
-	SP_monster_soldier_h(self);
-
-	sound_pain_ss = gi.soundindex("soldier/solpain3.wav");
-	sound_death_ss = gi.soundindex("soldier/soldeth3.wav");
-	gi.soundindex("soldier/solatck3.wav");
-
-	self->s.skinnum = 10;
-	self->count = self->s.skinnum - 6;
-	self->health = self->max_health = 70 * st.health_multiplier;
-	self->gib_health = -30;
+	SetupMonster_Guard(self);
+	switch (irandom(10))
+	{
+		case 0:
+			SetupMonsterSpecifics_GuardMachinegun(self);
+			break;
+		case 1:
+			SetupMonsterSpecifics_GuardBlaster(self);
+			break;
+		case 2:
+			SetupMonsterSpecifics_GuardShotgun(self);
+			break;
+		case 3:
+			SetupMonsterSpecifics_GuardHyperblaster(self);
+			break;
+		case 4:
+			SetupMonsterSpecifics_GuardRipper(self);
+			break;
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
+		default:
+			SetupMonsterSpecifics_GuardLaser(self);
+			break;
+	}
+	walkmonster_start(self);
 }
 
 // END 13-APR-98

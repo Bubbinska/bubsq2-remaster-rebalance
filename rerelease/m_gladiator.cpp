@@ -388,91 +388,15 @@ MONSTERINFO_BLOCKED(gladiator_blocked) (edict_t *self, float dist) -> bool
 // PGM
 //===========
 
-/*QUAKED monster_gladiator (1 .5 0) (-32 -32 -24) (32 32 64) Ambush Trigger_Spawn Sight
- */
-void SP_monster_gladiator(edict_t *self)
+void SetupMonsterSpecifics_Gladiator(edict_t *self)
 {
-	if ( !M_AllowSpawn( self ) ) {
-		G_FreeEdict( self );
-		return;
-	}
-
-	sound_pain1 = gi.soundindex("gladiator/pain.wav");
-	sound_pain2 = gi.soundindex("gladiator/gldpain2.wav");
-	sound_die = gi.soundindex("gladiator/glddeth2.wav");
-	sound_die2 = gi.soundindex("gladiator/death.wav");
-	sound_cleaver_swing = gi.soundindex("gladiator/melee1.wav");
-	sound_cleaver_hit = gi.soundindex("gladiator/melee2.wav");
-	sound_cleaver_miss = gi.soundindex("gladiator/melee3.wav");
-	sound_idle = gi.soundindex("gladiator/gldidle1.wav");
-	sound_search = gi.soundindex("gladiator/gldsrch1.wav");
-	sound_sight = gi.soundindex("gladiator/sight.wav");
-
-	self->movetype = MOVETYPE_STEP;
-	self->solid = SOLID_BBOX;
-	self->s.modelindex = gi.modelindex("models/monsters/gladiatr/tris.md2");
-	
-	gi.modelindex("models/monsters/gladiatr/gibs/chest.md2");
-	gi.modelindex("models/monsters/gladiatr/gibs/head.md2");
-	gi.modelindex("models/monsters/gladiatr/gibs/larm.md2");
-	gi.modelindex("models/monsters/gladiatr/gibs/rarm.md2");
-	gi.modelindex("models/monsters/gladiatr/gibs/thigh.md2");
-
+	// Specifics
 	// RAFAEL
-	if (strcmp(self->classname, "monster_gladb") == 0)
-	{
-		sound_gunb = gi.soundindex("weapons/plasshot.wav");
-
-		self->health = 200 * st.health_multiplier;
-		self->mass = 350;
-
-		if (!st.was_key_specified("power_armor_type"))
-			self->monsterinfo.power_armor_type = IT_ITEM_POWER_SHIELD;
-		if (!st.was_key_specified("power_armor_power"))
-			self->monsterinfo.power_armor_power = 200;
-
-		self->s.skinnum = 2;
-
-		self->style = 1;
-
-		self->monsterinfo.weapon_sound = gi.soundindex("weapons/phaloop.wav");
-	}
-	else
-	{
-		// RAFAEL
-		sound_gun = gi.soundindex("gladiator/railgun.wav");
-
-		self->health = 300 * st.health_multiplier;
-		self->mass = 400;
-		// RAFAEL
-
-		self->monsterinfo.weapon_sound = gi.soundindex("weapons/rg_hum.wav");
-	}
+	sound_gun = gi.soundindex("gladiator/railgun.wav");
+	self->health = 300 * st.health_multiplier;
+	self->mass = 400;
 	// RAFAEL
-
-	self->gib_health = -175;
-
-	self->mins = { -32, -32, -24 };
-	self->maxs = { 32, 32, 42 };
-
-	self->pain = gladiator_pain;
-	self->die = gladiator_die;
-
-	self->monsterinfo.stand = gladiator_stand;
-	self->monsterinfo.walk = gladiator_walk;
-	self->monsterinfo.run = gladiator_run;
-	self->monsterinfo.dodge = nullptr;
-	self->monsterinfo.attack = gladiator_attack;
-	self->monsterinfo.melee = gladiator_melee;
-	self->monsterinfo.sight = gladiator_sight;
-	self->monsterinfo.idle = gladiator_idle;
-	self->monsterinfo.search = gladiator_search;
-	self->monsterinfo.blocked = gladiator_blocked; // PGM
-	self->monsterinfo.setskin = gladiator_setskin;
-
-	gi.linkentity(self);
-	M_SetAnimation(self, &gladiator_move_stand);
-	self->monsterinfo.scale = MODEL_SCALE;
+	self->monsterinfo.weapon_sound = gi.soundindex("weapons/rg_hum.wav");
 
 	// one in three of these guys will be a chonky boy
 	if (!st.item && DiceRoll() > 4)
@@ -495,7 +419,7 @@ void SP_monster_gladiator(edict_t *self)
 			case 4:
 			case 5:
 				// TODO: If it's a phalanx gladiator, drop magslugs or phalanx instead
-				self->item = FindItemByClassname("ammo_slugs"); 
+				self->item = FindItemByClassname("ammo_slugs");
 				break;
 			case 6:
 				self->item = FindItemByClassname("weapon_railgun");
@@ -504,6 +428,124 @@ void SP_monster_gladiator(edict_t *self)
 				break;
 			}
 		}
+	}
+}
+
+void SetupMonsterSpecifics_Gladiatorb(edict_t *self)
+{
+	// Specifics
+	sound_gunb = gi.soundindex("weapons/plasshot.wav");
+	self->health = 200 * st.health_multiplier;
+	self->mass = 350;
+
+	if (!st.was_key_specified("power_armor_type"))
+		self->monsterinfo.power_armor_type = IT_ITEM_POWER_SHIELD;
+	if (!st.was_key_specified("power_armor_power"))
+		self->monsterinfo.power_armor_power = 200;
+
+	self->s.skinnum = 2;
+	self->style = 1;
+	self->monsterinfo.weapon_sound = gi.soundindex("weapons/phaloop.wav");
+
+	// one in three of these guys will be a chonky boy
+	if (!st.item && DiceRoll() > 4)
+	{
+		if (!self->s.scale)
+			self->s.scale = 1;
+		self->s.effects |= EF_HYPERBLASTER;
+		self->s.scale *= 1.25;
+		self->health *= 1.5;
+
+		if (!self->item)
+		{
+			// Chance for ammo, rare chance for weapon
+			switch (DiceRoll())
+			{
+			case 1:
+			case 2:
+			case 3:
+				break;
+			case 4:
+			case 5:
+				// TODO: If it's a phalanx gladiator, drop magslugs or phalanx instead
+				self->item = FindItemByClassname("ammo_magslug");
+				break;
+			case 6:
+				self->item = FindItemByClassname("weapon_phalanx");
+				break;
+			default:
+				break;
+			}
+		}
+	}
+}
+
+void SetupMonster_Gladiator(edict_t *self)
+{
+	sound_pain1 = gi.soundindex("gladiator/pain.wav");
+	sound_pain2 = gi.soundindex("gladiator/gldpain2.wav");
+	sound_die = gi.soundindex("gladiator/glddeth2.wav");
+	sound_die2 = gi.soundindex("gladiator/death.wav");
+	sound_cleaver_swing = gi.soundindex("gladiator/melee1.wav");
+	sound_cleaver_hit = gi.soundindex("gladiator/melee2.wav");
+	sound_cleaver_miss = gi.soundindex("gladiator/melee3.wav");
+	sound_idle = gi.soundindex("gladiator/gldidle1.wav");
+	sound_search = gi.soundindex("gladiator/gldsrch1.wav");
+	sound_sight = gi.soundindex("gladiator/sight.wav");
+
+	self->movetype = MOVETYPE_STEP;
+	self->solid = SOLID_BBOX;
+	self->s.modelindex = gi.modelindex("models/monsters/gladiatr/tris.md2");
+
+	gi.modelindex("models/monsters/gladiatr/gibs/chest.md2");
+	gi.modelindex("models/monsters/gladiatr/gibs/head.md2");
+	gi.modelindex("models/monsters/gladiatr/gibs/larm.md2");
+	gi.modelindex("models/monsters/gladiatr/gibs/rarm.md2");
+	gi.modelindex("models/monsters/gladiatr/gibs/thigh.md2");
+
+	self->gib_health = -200;
+
+	self->mins = { -32, -32, -24 };
+	self->maxs = { 32, 32, 42 };
+
+	self->pain = gladiator_pain;
+	self->die = gladiator_die;
+
+	self->monsterinfo.stand = gladiator_stand;
+	self->monsterinfo.walk = gladiator_walk;
+	self->monsterinfo.run = gladiator_run;
+	self->monsterinfo.dodge = nullptr;
+	self->monsterinfo.attack = gladiator_attack;
+	self->monsterinfo.melee = gladiator_melee;
+	self->monsterinfo.sight = gladiator_sight;
+	self->monsterinfo.idle = gladiator_idle;
+	self->monsterinfo.search = gladiator_search;
+	self->monsterinfo.blocked = gladiator_blocked; // PGM
+	self->monsterinfo.setskin = gladiator_setskin;
+
+	gi.linkentity(self);
+	M_SetAnimation(self, &gladiator_move_stand);
+	self->monsterinfo.scale = MODEL_SCALE;
+}
+
+/*QUAKED monster_gladiator (1 .5 0) (-32 -32 -24) (32 32 64) Ambush Trigger_Spawn Sight
+ */
+void SP_monster_gladiator(edict_t* self)
+{
+	if (!M_AllowSpawn(self)) {
+		G_FreeEdict(self);
+		return;
+	}
+
+	SetupMonster_Gladiator(self);
+
+	if (DiceRoll() > 4)
+	{
+		SetupMonsterSpecifics_Gladiatorb(self);
+	}
+	else
+	{
+		SetupMonsterSpecifics_Gladiator(self);
 	}
 
 	walkmonster_start(self);
@@ -517,5 +559,21 @@ void SP_monster_gladiator(edict_t *self)
  */
 void SP_monster_gladb(edict_t *self)
 {
-	SP_monster_gladiator(self);
+	if (!M_AllowSpawn(self)) {
+		G_FreeEdict(self);
+		return;
+	}
+
+	SetupMonster_Gladiator(self);
+
+	if (DiceRoll() > 4)
+	{
+		SetupMonsterSpecifics_Gladiator(self);
+	}
+	else
+	{
+		SetupMonsterSpecifics_Gladiatorb(self);
+	}
+
+	walkmonster_start(self);
 }

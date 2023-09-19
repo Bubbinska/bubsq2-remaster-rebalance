@@ -123,12 +123,34 @@ void SP_misc_hologram(edict_t *ent);
 void SP_misc_lavaball(edict_t *ent);
 
 void SP_monster_berserk(edict_t *self);
+
+// Bubs: Gladiator stuff
+void SetupMonster_Gladiator(edict_t *self);
+void SetupMonsterSpecifics_Gladiator(edict_t *self);
+void SetupMonsterSpecifics_Gladiatorb(edict_t *self);
 void SP_monster_gladiator(edict_t *self);
+
 void SP_monster_gunner(edict_t *self);
 void SP_monster_infantry(edict_t *self);
+
+// Bubs: Whole buncha guards
+void SetupMonster_Guard(edict_t *self);
+void SetupMonsterSpecifics_GuardBlaster(edict_t *self);
+void SetupMonsterSpecifics_GuardShotgun(edict_t *self);
+void SetupMonsterSpecifics_GuardMachinegun(edict_t *self);
+void SetupMonsterSpecifics_GuardRipper(edict_t *self);
+void SetupMonsterSpecifics_GuardLaser(edict_t *self);
+void SetupMonsterSpecifics_GuardHyperblaster(edict_t *self);
+
 void SP_monster_soldier_light(edict_t *self);
 void SP_monster_soldier(edict_t *self);
 void SP_monster_soldier_ss(edict_t *self);
+// RAFAEL 14-APR-98
+void SP_monster_soldier_hypergun(edict_t* self);
+void SP_monster_soldier_lasergun(edict_t* self);
+void SP_monster_soldier_ripper(edict_t* self);
+
+
 void SP_monster_tank(edict_t *self);
 void SP_monster_medic(edict_t *self);
 void SP_monster_flipper(edict_t *self);
@@ -156,10 +178,6 @@ void SP_turret_breach(edict_t *self);
 void SP_turret_base(edict_t *self);
 void SP_turret_driver(edict_t *self);
 
-// RAFAEL 14-APR-98
-void SP_monster_soldier_hypergun(edict_t *self);
-void SP_monster_soldier_lasergun(edict_t *self);
-void SP_monster_soldier_ripper(edict_t *self);
 void SP_monster_fixbot(edict_t *self);
 void SP_monster_gekk(edict_t *self);
 void SP_monster_chick_heat(edict_t *self);
